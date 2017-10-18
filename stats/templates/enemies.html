@@ -4,10 +4,10 @@
 <html>
     <head>
         <link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" />
-        <title> Hero Index </title>
+        <title> {{heroName}} Matchups </title>
     </head>
     <body>
-      <center> Hero Index </center>
+      <center>{{heroName}} Matchups</center>
       <center>{% render_table table %}</center>
     </body>
 </html>

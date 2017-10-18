@@ -2,32 +2,34 @@ import json
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.db import models
-from stats.models import Person
 from .models import Hero
+from .models import Enemy
 from .tables import HeroTable
+from .tables import EnemyTable
 from django_tables2 import RequestConfig
 
 with open('stats/stats.json') as json_data:
     d = json.load(json_data)
-    print "type of d is " + str(d.__class__)
 
-dicNames = {}
 for h in d:
-    print str(h)
-    #hero = Hero.objects.create(name=str(h))
-    hero = Hero(name=str(h))
-    print "Length of hero objects=" +str(Hero.objects.count)
-    hero.save()
-    print "\tNo errors after save"
+    newHero = Hero(name=str(h))
+    newHero.save()
+    for e in d[h]:
+        enemy = Enemy(name=str(e), hero=newHero, wins=d[h][e]['wins'], losses=d[h][e]['losses'])
+        enemy.save()
 
+
+def enemies(request, hero_id):
+    hero = Hero.objects.get(id=hero_id)
+    all_enemies = hero.enemy_set.all()
+    table=EnemyTable(all_enemies)
+    table.exlude = ('wins','losses')
+    RequestConfig(request).configure(table)
+    #where to declare variables inside view available for html
+    return render(request, 'enemies.html', { 'table': table, 'heroName':hero.name} )
 def index(request):
     return HttpResponse("This is the stats index.")
-def people(request):
-    return render(request, 'people.html', {'people': Person.objects.all()})
 def heroes(request):
-    #table = HeroTable(d)
-    print "Length of hero objects=" +str(Hero.objects.count)
     table = HeroTable(Hero.objects.all())
     RequestConfig(request).configure(table)
     return render(request, 'heroes.html', { 'table': table})
-
