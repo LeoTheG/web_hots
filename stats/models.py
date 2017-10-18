@@ -1,17 +1,20 @@
 from django.db import models
-
-
-class Person(models.Model):
-    name = models.CharField(max_length=10)
+from slugify import slugify
 
 class Hero(models.Model):
     name = models.CharField(max_length=18)
+    slug = models.SlugField(unique=True)
 
-    '''
-    def show_hero_url(self, obj):
-        return '<a href="%s">%s</a>' % (obj.hero_url, obj.hero_url)
-    show_hero_url.allow_tags = True
-    '''
+    def get_slug(self):
+        print "called get_slug()"
+        return slugify(self.name)
+    def save(self, *args, **kwargs):
+        print "saving hero"
+        if not self.slug:
+            self.slug = self.get_slug()
+        print "saving hero super()"
+        super(Hero,self).save()
+
 
 class Enemy(models.Model):
     name = models.CharField(max_length=18)
@@ -19,6 +22,7 @@ class Enemy(models.Model):
     wins = models.IntegerField()
     losses = models.IntegerField()
     def win_perc(self):
-        return float(self.wins/self.losses)
+        if (self.losses == 0) return 100
+        return float(self.wins/self.losses)*100
     def total_games(self):
         return (self.wins+self.losses)

@@ -19,11 +19,10 @@ for h in d:
         enemy.save()
 
 
-def enemies(request, hero_id):
-    hero = Hero.objects.get(id=hero_id)
+def enemies(request, slug):
+    hero = Hero.objects.get(slug=slug)
     all_enemies = hero.enemy_set.all()
     table=EnemyTable(all_enemies)
-    table.exlude = ('wins','losses')
     RequestConfig(request).configure(table)
     #where to declare variables inside view available for html
     return render(request, 'enemies.html', { 'table': table, 'heroName':hero.name} )
