@@ -38,7 +38,7 @@ SECRET_KEY = 'b@imhs=e-$cu(rwfki3wog3zch^^&x2dd319vs!63umco8n4&f'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['nameless-temple-13498.herokuapp.com']
 
 
 # Application definition
