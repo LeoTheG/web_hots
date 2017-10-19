@@ -14,7 +14,7 @@ import os
 import dj_database_url
 
 db_from_env = dj_database_url.config(conn_max_age=500)
-DATABASES = {'default': db_from_env)
+DATABASES = {'default': db_from_env}
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
