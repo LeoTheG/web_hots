@@ -12,21 +12,25 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 import dj_database_url
+from os.path import normpath, join
 
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES = {'default': db_from_env}
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+#STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+STATIC_ROOT = normpath(join(BASE_DIR, 'staticfiles'))
 STATIC_URL = '/static/'
 
 # Extra places for collectstatic to find static files.
 STATICFILES_DIRS = (
-            os.path.join(PROJECT_ROOT, 'static'),
+            normpath(join(BASE_DIR, 'static')),
+            #os.path.join(BASE_DIR, 'app/static'),
             )
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # Quick-start development settings - unsuitable for production
@@ -38,7 +42,7 @@ SECRET_KEY = 'b@imhs=e-$cu(rwfki3wog3zch^^&x2dd319vs!63umco8n4&f'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['nameless-temple-13498.herokuapp.com']
+ALLOWED_HOSTS = ['nameless-temple-13498.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
