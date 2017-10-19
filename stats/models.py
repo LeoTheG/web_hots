@@ -22,10 +22,6 @@ class Enemy(models.Model):
     hero = models.ForeignKey(Hero, on_delete=models.CASCADE)
     wins = models.IntegerField()
     losses = models.IntegerField()
-    def win_perc(self):
-        if (self.losses == 0): return 100
-        return float(self.wins/self.losses)*100
-    def total_games(self):
-        return (self.wins+self.losses)
+
     def get_short_name(self):
         return slugify(re.sub(r'\W+', '', self.name))

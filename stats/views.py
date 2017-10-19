@@ -7,38 +7,43 @@ from .models import Enemy
 from .tables import HeroTable
 from .tables import EnemyTable
 from django_tables2 import RequestConfig
+import unicodedata
 
-with open('stats/stats.json') as json_data:
-    d = json.load(json_data)
+load_db = 0
+# TODO better config file reading
+with open('stats/config.txt') as f:
+    load_db = int(f.readline().rstrip('\n')[len('load_db = ')])
 
-firstHero = True
-for h in d:
-    # runs on first hero creation only
-    if (firstHero):
-        newHero = Hero(name=str(h))
-        newHero.save()
-        print "Created first hero: ", str(h)
-        firstHero = False
+# load the database
+if load_db:
+    with open('stats/stats.json') as json_data:
+        d = json.load(json_data)
 
-    #newHero = Hero.objects.all()[0]
+    firstHero = True
+    for h in d:
+        normalized_h = unicodedata.normalize('NFD', h).encode('ascii', 'ignore')
+        # runs on first hero creation only
+        if (firstHero):
+            newHero = Hero(name=normalized_h)
+            newHero.save()
+            firstHero = False
 
-    # create new hero only when no other hero exists with same name
-    if len(Hero.objects.filter(name=str(h))) == 0:
-        newHero = Hero(name=str(h))
-        newHero.save()
+        # create new hero only when no other hero exists with same name
+        if len(Hero.objects.filter(name=normalized_h)) == 0:
+            newHero = Hero(name=normalized_h)
+            newHero.save()
 
-    newHero = Hero.objects.get(name=str(h))
-    #print "Created hero with name", str(h)
-    for e in d[h]:
-        # create new hero
-        if len(Hero.objects.filter(name=str(e))) == 0:
-            #print "\tNo heroes with name", str(e)
-            anotherHero = Hero(name=str(e))
-            anotherHero.save()
-            #enemy = Enemy(name=str(e), hero=anotherHero, wins=d[h][e]['wins'], losses=d[h][e]['losses'])
-            #enemy.save()
-        enemy = Enemy(name=str(e), hero=newHero, wins=d[h][e]['wins'], losses=d[h][e]['losses'])
-        enemy.save()
+        newHero = Hero.objects.get(name=normalized_h)
+        for e in d[h]:
+            # create new hero
+            normalized_e = unicodedata.normalize('NFD', e).encode('ascii', 'ignore')
+            if len(Hero.objects.filter(name=normalized_e)) == 0:
+                anotherHero = Hero(name=normalized_e)
+                anotherHero.save()
+            enemy = Enemy(name=normalized_e, hero=newHero, wins=d[h][e]['wins'], losses=d[h][e]['losses'])
+            enemy.save()
+    with open('stats/config.txt', "w") as r:
+        r.write('load_db = 0')
 
 
 def enemies(request, slug):
