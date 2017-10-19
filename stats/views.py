@@ -11,6 +11,7 @@ import unicodedata
 
 load_db = 0
 # TODO better config file reading
+# check to load db
 with open('stats/config.txt') as f:
     load_db = int(f.readline().rstrip('\n')[len('load_db = ')])
 

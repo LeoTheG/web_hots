@@ -22,7 +22,8 @@ class TotalGamesColumn(tables.Column):
 
 class WinPercColumn(tables.Column):
     def render(self, record):
-        return str(record.wins / ((record.wins+record.losses)*1.0) * 100)
+        #return str("{0:.2f}".format((record.wins / ((record.wins+record.losses)*1.0) * 100)))
+        return str(int((record.wins / ((record.wins+record.losses)*1.0) * 100))) + '%'
     def order(self, queryset, is_descending):
         queryset = queryset.annotate(win_perc=(F('wins')/((F('losses')+F('wins'))*1.0))).order_by(('-' if is_descending else '') + 'win_perc')
         return (queryset, True)
