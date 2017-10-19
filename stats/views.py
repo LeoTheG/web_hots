@@ -12,11 +12,13 @@ import unicodedata
 load_db = 0
 # TODO better config file reading
 # check to load db
+
 with open('stats/config.txt') as f:
     load_db = int(f.readline().rstrip('\n')[len('load_db = ')])
 
 # load the database
 if load_db:
+    print "loading db"
     with open('stats/stats.json') as json_data:
         d = json.load(json_data)
 
@@ -45,7 +47,6 @@ if load_db:
             enemy.save()
     with open('stats/config.txt', "w") as r:
         r.write('load_db = 0')
-
 
 def enemies(request, slug):
     hero = Hero.objects.get(slug=slug)
