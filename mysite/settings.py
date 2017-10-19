@@ -17,18 +17,19 @@ from os.path import normpath, join
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES = {'default': db_from_env}
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+PROJECT_DIR = os.path.join(PROJECT_DOOT, '../mysite')
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+#BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-#STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
-STATIC_ROOT = normpath(join(BASE_DIR, 'staticfiles'))
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+#STATIC_ROOT = normpath(join(BASE_DIR, 'staticfiles'))
 STATIC_URL = '/static/'
 
 # Extra places for collectstatic to find static files.
 STATICFILES_DIRS = (
-            normpath(join(BASE_DIR, 'static')),
-            #os.path.join(BASE_DIR, 'app/static'),
+            #normpath(join(BASE_DIR, 'static')),
+            os.path.join(PROJECT_DIR, 'static/'),
             )
 
 
@@ -133,8 +134,3 @@ USE_L10N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.11/howto/static-files/
-
-STATIC_URL = '/static/'
