@@ -1,1 +1,1 @@
-load_db = 0
+load_db = 1
