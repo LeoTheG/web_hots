@@ -11,6 +11,7 @@ class HeroTable(tables.Table):
         attrs = {'class': 'paleblue', 'td': {'style':'text-align: center;'}}
         exclude = ('slug')
 class EnemyTable(tables.Table):
+    name = tables.LinkColumn('stats:enemies', args=[A('get_short_name')])
     class Meta:
         model = Enemy
         sequence = ('name', 'win_perc', 'total_games', 'wins', 'losses')

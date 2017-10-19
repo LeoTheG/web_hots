@@ -7,7 +7,8 @@ class Hero(models.Model):
     slug = models.SlugField(unique=True)
 
     def get_slug(self):
-        return slugify(self.name)
+        #return slugify(self.name)
+        return slugify(self.get_short_name())
     def get_short_name(self):
         return slugify(re.sub(r'\W+', '', self.name))
     def save(self, *args, **kwargs):
@@ -26,3 +27,5 @@ class Enemy(models.Model):
         return float(self.wins/self.losses)*100
     def total_games(self):
         return (self.wins+self.losses)
+    def get_short_name(self):
+        return slugify(re.sub(r'\W+', '', self.name))
