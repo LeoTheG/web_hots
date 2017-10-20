@@ -11,3 +11,4 @@ python-slugify==1.2.4
 pytz==2017.2
 requests==2.9.1
 Unidecode==0.4.21
+whitenoise==3.3.1
