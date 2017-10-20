@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 import os
 import dj_database_url
 from os.path import normpath, join
+from django.conf import settings
 
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES = {'default': db_from_env}
@@ -27,7 +28,7 @@ STATIC_ROOT = os.path.join(PROJECT_DIR, 'staticfiles/')
 STATIC_URL = '/static/'
 
 # Extra places for collectstatic to find static files.
-STATICFILES_DIRS = ()
+STATICFILES_DIRS = (os.path.join(PROJECT_ROOT, '../stats/static/'),)
 '''
 STATICFILES_DIRS = (
             #normpath(join(BASE_DIR, 'static')),

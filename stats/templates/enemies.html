@@ -4,11 +4,14 @@
 <html>
     <head>
         <link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" />
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="{% static 'css/main.css' %}" />
         <title> {{heroName}} Matchups </title>
     </head>
     <body>
-      <a href="{% url 'stats:heroes' %}"> Home </a>
-      <center>{{heroName}} Matchups</center>
+      <a href="{% url 'stats:heroes' %}"><button type="button" class="btn btn-primary">Home</button></a>
+      <center><h1>{{heroName}} Matchups</h1></center>
       <center>{% render_table table %}</center>
     </body>
 </html>
