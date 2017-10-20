@@ -9,13 +9,11 @@ class HeroTable(tables.Table):
     class Meta:
         model = Hero
         fields = {'name', 'slug'}
-        attrs = {'class': 'paleblue', 'td': {'style':'text-align: center;'}}
         exclude = ('slug')
+        attrs = {}
 
 class TotalGamesColumn(tables.Column):
     def render(self, record):
-        #self.attrs = {"td": {"bgcolor": "#0E0B16"}}
-        #print "rendering enemy: " + str(record.name) + ", with " + str(record.wins) + " wins and " + str(record.losses) + " losses"
         return str(record.wins + record.losses)
     def order(self, queryset, is_descending):
         queryset = queryset.annotate(amount=F('wins')+F('losses')).order_by(('-' if is_descending else '') + 'amount')
@@ -23,8 +21,6 @@ class TotalGamesColumn(tables.Column):
 
 class WinPercColumn(tables.Column):
     def render(self, record):
-        #self.attrs = {"td": {"bgcolor": "#0E0B16"}}
-        #return str("{0:.2f}".format((record.wins / ((record.wins+record.losses)*1.0) * 100)))
         return str(int((record.wins / ((record.wins+record.losses)*1.0) * 100))) + '%'
     def order(self, queryset, is_descending):
         queryset = queryset.annotate(win_perc=(F('wins')/((F('losses')+F('wins'))*1.0))).order_by(('-' if is_descending else '') + 'win_perc')
@@ -39,8 +35,6 @@ class EnemyTable(tables.Table):
         model = Enemy
         sequence = ('name', 'win_perc', 'total_games', 'wins', 'losses')
         fields = {'name', 'win_perc', 'total_games','wins','losses' }
-        #attrs = {'class': 'paleblue', 'td': {'style':'text-align: center;'}}
-        #attrs = {'class': 'paleblue', 'td': {'style':'text-align: center;'}}
-        attrs = {"th": {"bgcolor": "#0E0B16"},}
-                #"td": {"bgcolor": "#2B2244" }}
+        attrs = {}
+        #        }
         exclude= ('wins','losses')

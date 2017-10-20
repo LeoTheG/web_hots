@@ -7,11 +7,13 @@ table tr:nth-child(odd) td{
   background-color: #2B2244;
   text-align: center;
   width: 100px;
+  font-size: 18px;
 }
 table tr:nth-child(even) td{
   background-color: #4c3c77;
   text-align: center;
   width: 100px;
+  font-size: 18px;
 }
 /*
 td{
@@ -30,3 +32,24 @@ h1{
   font-size: 200%;
   color: #4c3c77;
 }
+
+.pagination{
+    color: #4c3c77;
+}
+
+.pagination>li>a{
+    color:white;
+    background-color: #4c3c77;
+}
+
+/*
+.pagination > li > a:focus,
+.pagination > li > a:hover,
+.pagination > li > span:focus,
+.pagination > li > span:hover {
+    z-index: 3;
+    color: #4c3c77!important;
+    background-color: #4c3c77!important;
+    border-color: #4c3c77!important;
+}
+*/

@@ -8,6 +8,7 @@ from .tables import HeroTable
 from .tables import EnemyTable
 from django_tables2 import RequestConfig
 import unicodedata
+from dal import autocomplete
 
 load_db = 0
 # TODO better config file reading
@@ -60,3 +61,17 @@ def heroes(request):
     table = HeroTable(Hero.objects.all())
     RequestConfig(request).configure(table)
     return render(request, 'heroes.html', { 'table': table})
+class HeroAutoComplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        '''
+        # Don't forget to filter out results depending on the visitor !
+        if not self.request.user.is_authenticated():
+            return Country.objects.none()
+        '''
+
+        qs = Hero.objects.all()
+
+        if self.q:
+            qs = qs.filter(name__istartswith=self.q)
+
+        return qs

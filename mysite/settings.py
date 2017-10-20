@@ -54,6 +54,8 @@ ALLOWED_HOSTS = ['nameless-temple-13498.herokuapp.com', '127.0.0.1']
 
 INSTALLED_APPS = [
     'stats.apps.StatsConfig',
+    'dal',
+    'dal_select2',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
