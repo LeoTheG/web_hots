@@ -10,6 +10,17 @@ from django_tables2 import RequestConfig
 import unicodedata
 from dal import autocomplete
 
+# Instanciate a widget with a bunch of options for select2:
+autocomplete.ModelSelect2(
+    url='select2_fk',
+    attrs={
+        # Set some placeholder
+        'data-placeholder': 'Autocomplete ...',
+        # Only trigger autocompletion after 3 characters have been typed
+        'data-minimum-input-length': 1,
+    },
+)
+
 load_db = 0
 # TODO better config file reading
 # check to load db
@@ -61,8 +72,12 @@ def heroes(request):
     table = HeroTable(Hero.objects.all())
     RequestConfig(request).configure(table)
     return render(request, 'heroes.html', { 'table': table})
+
 class HeroAutoComplete(autocomplete.Select2QuerySetView):
+    template_name = "heroes.html"
+    print "in HeroAutoComplete"
     def get_queryset(self):
+        print "called get_queryset"
         '''
         # Don't forget to filter out results depending on the visitor !
         if not self.request.user.is_authenticated():
@@ -75,3 +90,4 @@ class HeroAutoComplete(autocomplete.Select2QuerySetView):
             qs = qs.filter(name__istartswith=self.q)
 
         return qs
+
