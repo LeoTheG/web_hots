@@ -18,7 +18,6 @@ with open('stats/config.txt') as f:
 
 # load the database
 if load_db:
-    print "loading db"
     with open('stats/stats.json') as json_data:
         d = json.load(json_data)
 
