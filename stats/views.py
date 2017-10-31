@@ -4,12 +4,17 @@ from django.http import HttpResponse
 from django.db import models
 from .models import Hero
 from .models import Enemy
+from .models import Map
+from .models import Ally
+from .models import HeroMap
+from .models import Talent
 from .tables import HeroTable
 from .tables import EnemyTable
 from django_tables2 import RequestConfig
 import unicodedata
 from dal import autocomplete
 
+LEVELS = ['1','4','7','10','13','16','20']
 # Instanciate a widget with a bunch of options for select2:
 autocomplete.ModelSelect2(
     url='select2_fk',
@@ -25,6 +30,14 @@ load_db = 0
 # TODO better config file reading
 # check to load db
 
+def create_hero(name,total_wins,total_losses):
+    newHero = Hero(name=name, total_wins=total_wins,total_losses=total_losses)
+    newHero.save()
+    return newHero
+
+def normalize(name):
+    return unicodedata.normalize('NFD', name).encode('ascii', 'ignore')
+
 with open('stats/config.txt') as f:
     load_db = int(f.readline().rstrip('\n')[len('load_db = ')])
 
@@ -35,27 +48,51 @@ if load_db:
 
     firstHero = True
     for h in d:
-        normalized_h = unicodedata.normalize('NFD', h).encode('ascii', 'ignore')
+        if h == 'maps':
+            continue
+        normalized_h = normalize(h)
         # runs on first hero creation only
         if (firstHero):
-            newHero = Hero(name=normalized_h)
-            newHero.save()
+            newHero = create_hero(name=normalized_h, total_wins=d[h]['total_wins'],
+                    total_losses=d[h]['total_losses'])
             firstHero = False
 
         # create new hero only when no other hero exists with same name
         if len(Hero.objects.filter(name=normalized_h)) == 0:
-            newHero = Hero(name=normalized_h)
-            newHero.save()
+            newHero = create_hero(name=normalized_h, total_wins=d[h]['total_wins'],
+                        total_losses=d[h]['total_losses'])
+        else:
+            newHero = Hero.objects.get(name=normalized_h)
 
-        newHero = Hero.objects.get(name=normalized_h)
-        for e in d[h]:
-            # create new hero
-            normalized_e = unicodedata.normalize('NFD', e).encode('ascii', 'ignore')
-            if len(Hero.objects.filter(name=normalized_e)) == 0:
-                anotherHero = Hero(name=normalized_e)
-                anotherHero.save()
-            enemy = Enemy(name=normalized_e, hero=newHero, wins=d[h][e]['wins'], losses=d[h][e]['losses'])
+        # create new maps and talents for maps
+        for _map in d[h]['maps']:
+            normalized_map = normalize(_map)
+            newHeroMap = HeroMap(name=normalized_map,wins=d[h]['maps'][_map]['wins'],
+                                 losses=d[h]['maps'][_map]['losses'], hero=newHero)
+            newHeroMap.save()
+            talent_counter = 0
+            for talent_level in d[h]['maps'][_map]['talents']:
+                #for talent_choice in d[h]['maps'][_map]['talents'][talent][LEVELS[talent_counter]]:
+                for talent_choice in d[h]['maps'][_map]['talents'][talent_level]:
+                    newTalent = Talent(level=talent_level, name=talent_choice,wins=d[h]['maps'][_map]['talents'][talent_level][talent_choice]['wins'], losses=d[h]['maps'][_map]['talents'][talent_level][talent_choice]['losses'], hero_map=newHeroMap)
+                    newTalent.save()
+                    talent_counter += 1
+
+        # create new enemies
+        for e in d[h]['enemies']:
+            normalized_e = normalize(e)
+
+            enemy = Enemy(name=normalized_e, hero=newHero, wins=d[h]['enemies'][e]['wins'],
+                          losses=d[h]['enemies'][e]['losses'])
             enemy.save()
+
+        # create new allies
+        for ally in d[h]['allies']:
+            normalized_name = unicodedata.normalize('NFD', ally).encode('ascii', 'ignore')
+            ally = Ally(name=normalized_name, hero=newHero, wins=d[h]['allies'][ally]['wins'],
+                        losses=d[h]['allies'][ally]['losses'])
+            ally.save()
+
     with open('stats/config.txt', "w") as r:
         r.write('load_db = 0')
 
@@ -66,6 +103,10 @@ def enemies(request, slug):
     RequestConfig(request).configure(table)
     #where to declare variables inside view available for html
     return render(request, 'enemies.html', { 'table': table, 'heroName':hero.name} )
+def maps(request):
+    table = MapTable(Map.objects.all())
+    RequestConfig(request).configure(table)
+    return render(request, 'maps.html', { 'table': table})
 def index(request):
     return HttpResponse("This is the stats index.")
 def heroes(request):
