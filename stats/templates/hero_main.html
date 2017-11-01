@@ -1,4 +1,5 @@
 {% load static %}
+{% load get_item % }
 <!doctype html>
 <html>
     <head>
@@ -8,11 +9,21 @@
         <title> {{hero_name}} </title>
     </head>
     <body>
-      <a href="{% url 'stats:heroes' %}"><button type="button" class="btn btn-primary">Home</button></a>
+      <a href="{% url 'stats:index' %}"><button type="button" class="btn btn-primary">Home</button></a>
       <center>
       <h1>{{hero_name}} Main Page</h1>
         <a href="{% url 'stats:allies' slug=slug %}"><button type="button" class="btn btn-primary">Allies</button></a>
         <a href="{% url 'stats:enemies' slug=slug %}"><button type="button" class="btn btn-primary">Enemies</button></a>
+        <a href="{% url 'stats:hero_maps' slug=slug %}"><button type="button" class="btn btn-primary">Maps</button></a>
+        <h2> Overview </h2>
+        <h3> Win Rate <div class="important-text">{{win_perc}} % </div> </h3>
+        <h3> Best Maps 
+          <div class="important-text">
+            {{ bestMapNames.0 }} {{ bestMapWinPercs.0 }} %
+            {{ bestMapNames.1 }} {{ bestMapWinPercs.1 }} %
+            {{ bestMapNames.2 }} {{ bestMapWinPercs.2 }} %
+          </div> 
+        </h3>
       </center>
     </body>
 </html>

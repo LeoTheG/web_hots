@@ -12,23 +12,7 @@
         <title> Hero Index </title>
     </head>
     <body>
-        {% block content %}
-        <div>
-            <form action="" method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="text" />
-            <input type="submit" />
-            </form>
-        </div>
-        {% endblock %}
-
-        {% block footer %}
-        <script type="text/javascript" src="/static/collected/admin/js/vendor/jquery/jquery.js"></script>
-
-        {{ form.media }}
-        {% endblock %}
-
+      <a href="{% url 'stats:index' %}"><button type="button" class="btn btn-primary">Home</button></a>
         <center><h1> Hero Index</h1> </center>
         <center>{% render_table table %}</center>
     </body>

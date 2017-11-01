@@ -2,6 +2,7 @@ from django.db import models
 from slugify import slugify
 import re, string
 
+
 class Hero(models.Model):
     name = models.CharField(max_length=18)
     slug = models.SlugField(unique=True)
@@ -18,6 +19,13 @@ class Hero(models.Model):
             self.slug = self.get_slug()
         print "Saving hero " + self.name
         super(Hero,self).save(*args, **kwargs)
+
+    def get_win_perc(self):
+        return int((self.total_wins / ((self.total_losses+self.total_losses)*1.0) * 100))
+    def get_maps(self):
+#        return self.heromap_set.all().order_by('get_win_perc')[:5]
+        return self.heromap_set.all()
+        #return HeroMap.objects.filter(hero=self).order_by('-win_perc')[:5]
 
 
 class Enemy(models.Model):
@@ -68,6 +76,16 @@ class HeroMap(models.Model):
     losses = models.IntegerField()
     hero = models.ForeignKey(Hero, on_delete=models.CASCADE)
 
+    def get_short_name(self):
+        return slugify(re.sub(r'\W+', '', self.name))
+
+    '''
+    @classmethod
+    def get_win_perc(self):
+        calcWinPerc = int((self.wins / ((self.losses+self.losses)*1.0) * 100))
+        self.win_perc = calcWinPerc
+        return calcWinPerc
+    '''
 class Talent(models.Model):
     level = models.IntegerField()
     name = models.CharField(max_length=64)

@@ -10,7 +10,7 @@
         <title> {{heroName}} Allies </title>
     </head>
     <body>
-      <a href="{% url 'stats:heroes' %}"><button type="button" class="btn btn-primary">Home</button></a>
+      <a href="{% url 'stats:index' %}"><button type="button" class="btn btn-primary">Home</button></a>
       <center><h1><a href="{% url 'stats:hero_main' slug=slug %}">{{heroName}}</a> Ally Matchups</h1></center>
       <center><div>
         <div class="table_container">

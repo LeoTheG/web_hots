@@ -7,16 +7,11 @@
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
         <link rel="stylesheet" href="{% static 'css/main.css' %}" />
-        <title> {{heroName}} Enemies </title>
+        <title> {{heroName}} Map Winrates </title>
     </head>
-    <body>
       <a href="{% url 'stats:index' %}"><button type="button" class="btn btn-primary">Home</button></a>
-      <center><h1><a href="{% url 'stats:hero_main' slug=slug %}">{{heroName}}</a> Enemy Matchups</h1></center>
-      <center><div>
-        <div class="table_container">
-          {% render_table enemy_table %}
-        </div>
-        </div></center>
+      <center><h1><a href="{% url 'stats:hero_main' slug=slug %}">{{heroName}}</a> Map Matchups</h1></center>
+      <center>{% render_table table %}</center>
     </body>
 </html>
 

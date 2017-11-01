@@ -12,15 +12,7 @@
         <title> Map Index </title>
     </head>
     <body>
-        {% block content %}
-        {% endblock %}
-
-        {% block footer %}
-        <script type="text/javascript" src="/static/collected/admin/js/vendor/jquery/jquery.js"></script>
-
-        {{ form.media }}
-        {% endblock %}
-
+      <a href="{% url 'stats:index' %}"><button type="button" class="btn btn-primary">Home</button></a>
         <center><h1> Map Index</h1> </center>
         <center>{% render_table table %}</center>
     </body>

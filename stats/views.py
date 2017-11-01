@@ -14,6 +14,7 @@ from .tables import EnemyTable
 from .tables import AllyTable
 from .tables import MapTable
 from .tables import MapHeroTable
+from .tables import HeroMapTable
 from django_tables2 import RequestConfig
 import unicodedata
 from dal import autocomplete
@@ -109,8 +110,63 @@ if load_db:
 
 def hero_main(request, slug):
     hero = Hero.objects.get(slug=slug)
-    allies_url = 'stats:heroes:'+hero.name+':allies'
-    return render(request, 'hero_main.html', {'hero_name':hero.name, 'allies_url': allies_url, 'slug':slug})
+    total_wins = hero.total_wins
+    total_losses = hero.total_losses
+    win_perc = int((total_wins / ((total_losses+total_losses)*1.0) * 100))
+    hero_maps = hero.heromap_set.all()
+
+    best_map_dict = {'0':{'name':'','win_perc':0},
+                    '1':{'name':'','win_perc':0},
+                    '2':{'name':'','win_perc':0},
+                    '3':{'name':'','win_perc':0},
+                    '4':{'name':'','win_perc':0},
+                    }
+
+    '''
+    #best_maps = [0]*5
+    #best_map_names = ['']*5
+    for _map in hero_maps:
+        map_win_perc = int((_map.wins / ((_map.wins+_map.losses)*1.0) * 100))
+        # calculate the top 5 maps
+        for i in range(0,5):
+            print "Looking at " + _map.name
+            #if map_win_perc > best_maps[i]:
+            if map_win_perc > best_map_dict[str(i)]['win_perc']:
+                j = 4
+                while j > i:
+                    #best_maps[j] = best_maps[j-1]
+                    #best_map_names[j] = best_map_names[j-1]
+                    best_map_dict[str(j)]['win_perc'] = best_map_dict[str(j-1)]['win_perc']
+                    best_map_dict[str(j)]['name'] = best_map_dict[str(j-1)]['name']
+                    j -= 1
+                #best_maps[i]=map_win_perc
+                best_map_dict[str(i)]['win_perc']=map_win_perc
+                best_map_dict[str(i)]['name']=_map.name
+                print "New best map " + _map.name
+                #best_map_names[i]=_map.name
+                break
+
+    print str(best_map_dict)
+    '''
+    best_maps = [0]*5
+    best_map_names = ['']*5
+    for _map in hero_maps:
+        map_win_perc = int((_map.wins / ((_map.wins+_map.losses)*1.0) * 100))
+        # calculate the top 5 maps
+        for i in range(0,5):
+            if map_win_perc > best_maps[i]:
+                j = 4
+                while j > i:
+                    best_map_dict[str(j)]['win_perc'] = best_map_dict[str(j-1)]['win_perc']
+                    best_map_dict[str(j)]['name'] = best_map_dict[str(j-1)]['name']
+                    j -= 1
+                best_maps[i]=map_win_perc
+                best_map_names[i]=_map.name
+                break
+
+
+    return render(request, 'hero_main.html', {'hero_name':hero.name,'slug':slug, 'win_perc':win_perc, 'hero':hero, 'bestMapNames':best_map_names, 'bestMapWinPercs':best_maps})
+
 def enemies(request, slug):
     hero = Hero.objects.get(slug=slug)
     all_enemies = hero.enemy_set.all()
@@ -126,6 +182,13 @@ def allies(request, slug):
     #where to declare variables inside view available for html
     return render(request, 'allies.html', { 'ally_table': ally_table, 'heroName':hero.name, 'slug':slug} )
 
+def hero_maps(request, slug):
+    hero = Hero.objects.get(slug=slug)
+    hero_map_table = HeroMapTable(hero.heromap_set.all())
+    RequestConfig(request).configure(hero_map_table)
+    #where to declare variables inside view available for html
+    return render(request, 'hero_maps.html', { 'table': hero_map_table, 'heroName':hero.name, 'slug':slug} )
+
 
 def map_heroes(request, slug):
     _map = Map.objects.get(slug=slug)
@@ -140,7 +203,8 @@ def maps(request):
     RequestConfig(request).configure(table)
     return render(request, 'maps.html', { 'table': table})
 def index(request):
-    return HttpResponse("This is the stats index.")
+    return render(request, 'index.html')
+    #return HttpResponse("This is the stats index.")
 def heroes(request):
     table = HeroTable(Hero.objects.all())
     RequestConfig(request).configure(table)
