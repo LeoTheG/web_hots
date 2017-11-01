@@ -29,6 +29,8 @@ class Enemy(models.Model):
     def get_short_name(self):
         return slugify(re.sub(r'\W+', '', self.name))
 
+
+
 class Map(models.Model):
     name = models.CharField(max_length=32)
     slug = models.SlugField(unique=True)
@@ -41,6 +43,15 @@ class Map(models.Model):
         if not self.slug:
             self.slug = self.get_slug()
         super(Map,self).save()
+
+class MapHero(models.Model):
+    name = models.CharField(max_length=32)
+    _map = models.ForeignKey(Map, on_delete=models.CASCADE)
+    wins = models.IntegerField()
+    losses = models.IntegerField()
+
+    def get_short_name(self):
+        return slugify(re.sub(r'\W+', '', self.name))
 
 class Ally(models.Model):
     name = models.CharField(max_length=18)

@@ -7,9 +7,12 @@ from .models import Enemy
 from .models import Map
 from .models import Ally
 from .models import HeroMap
+from .models import MapHero
 from .models import Talent
 from .tables import HeroTable
 from .tables import EnemyTable
+from .tables import MapTable
+from .tables import MapHeroTable
 from django_tables2 import RequestConfig
 import unicodedata
 from dal import autocomplete
@@ -46,6 +49,13 @@ if load_db:
     with open('stats/stats.json') as json_data:
         d = json.load(json_data)
 
+    # create maps & map heroes
+    for _map in d['maps']:
+        new_map = Map(name=_map)
+        new_map.save()
+        for hero in d['maps'][_map]:
+            new_map_hero = MapHero(name=hero,_map=new_map,wins=d['maps'][_map][hero]['wins'], losses=d['maps'][_map][hero]['losses'])
+            new_map_hero.save()
     firstHero = True
     for h in d:
         if h == 'maps':
@@ -103,6 +113,15 @@ def enemies(request, slug):
     RequestConfig(request).configure(table)
     #where to declare variables inside view available for html
     return render(request, 'enemies.html', { 'table': table, 'heroName':hero.name} )
+
+def map_heroes(request, slug):
+    _map = Map.objects.get(slug=slug)
+    all_mapheroes = _map.maphero_set.all()
+    table = MapHeroTable(all_mapheroes)
+    RequestConfig(request).configure(table)
+    #where to declare variables inside view available for html
+    return render(request, 'map_heroes.html', { 'table': table, 'mapName':_map.name} )
+
 def maps(request):
     table = MapTable(Map.objects.all())
     RequestConfig(request).configure(table)
@@ -116,7 +135,6 @@ def heroes(request):
 
 class HeroAutoComplete(autocomplete.Select2QuerySetView):
     template_name = "heroes.html"
-    print "in HeroAutoComplete"
     def get_queryset(self):
         print "called get_queryset"
         '''
