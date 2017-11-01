@@ -11,6 +11,7 @@ from .models import MapHero
 from .models import Talent
 from .tables import HeroTable
 from .tables import EnemyTable
+from .tables import AllyTable
 from .tables import MapTable
 from .tables import MapHeroTable
 from django_tables2 import RequestConfig
@@ -106,13 +107,25 @@ if load_db:
     with open('stats/config.txt', "w") as r:
         r.write('load_db = 0')
 
+def hero_main(request, slug):
+    hero = Hero.objects.get(slug=slug)
+    allies_url = 'stats:heroes:'+hero.name+':allies'
+    return render(request, 'hero_main.html', {'hero_name':hero.name, 'allies_url': allies_url, 'slug':slug})
 def enemies(request, slug):
     hero = Hero.objects.get(slug=slug)
     all_enemies = hero.enemy_set.all()
-    table = EnemyTable(all_enemies)
-    RequestConfig(request).configure(table)
+    enemy_table = EnemyTable(all_enemies)
+    RequestConfig(request).configure(enemy_table)
     #where to declare variables inside view available for html
-    return render(request, 'enemies.html', { 'table': table, 'heroName':hero.name} )
+    return render(request, 'enemies.html', { 'enemy_table': enemy_table, 'heroName':hero.name, 'slug':slug} )
+
+def allies(request, slug):
+    hero = Hero.objects.get(slug=slug)
+    ally_table = AllyTable(hero.ally_set.all())
+    RequestConfig(request).configure(ally_table)
+    #where to declare variables inside view available for html
+    return render(request, 'allies.html', { 'ally_table': ally_table, 'heroName':hero.name, 'slug':slug} )
+
 
 def map_heroes(request, slug):
     _map = Map.objects.get(slug=slug)

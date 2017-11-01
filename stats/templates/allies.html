@@ -7,14 +7,14 @@
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
         <link rel="stylesheet" href="{% static 'css/main.css' %}" />
-        <title> {{heroName}} Enemies </title>
+        <title> {{heroName}} Allies </title>
     </head>
     <body>
       <a href="{% url 'stats:heroes' %}"><button type="button" class="btn btn-primary">Home</button></a>
-      <center><h1><a href="{% url 'stats:hero_main' slug=slug %}">{{heroName}}</a> Enemy Matchups</h1></center>
+      <center><h1><a href="{% url 'stats:hero_main' slug=slug %}">{{heroName}}</a> Ally Matchups</h1></center>
       <center><div>
         <div class="table_container">
-          {% render_table enemy_table %}
+          {% render_table ally_table %}
         </div>
         </div></center>
     </body>
