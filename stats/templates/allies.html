@@ -1,22 +1,12 @@
+{% extends 'base.html' %}
 {% load render_table from django_tables2 %}
-{% load static %}
-<!doctype html>
-<html>
-    <head>
-        <link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" />
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-        <link rel="stylesheet" href="{% static 'css/main.css' %}" />
-        <title> {{heroName}} Allies </title>
-    </head>
-    <body>
-      <a href="{% url 'stats:index' %}"><button type="button" class="btn btn-primary">Home</button></a>
-      <center><h1><a href="{% url 'stats:hero_main' slug=slug %}">{{heroName}}</a> Ally Matchups</h1></center>
-      <center><div>
-        <div class="table_container">
+{% block content %}
+    <title> {{heroName}} Allies </title>
+    <body> <center>
+        <h1><a href="{% url 'stats:hero_main' slug=slug %}">{{heroName}}</a> Ally Matchups</h1></center>
+      <center><div class="table_container">
           {% render_table ally_table %}
-        </div>
         </div></center>
-    </body>
-</html>
+    </center> </body>
+{% endblock %}
 

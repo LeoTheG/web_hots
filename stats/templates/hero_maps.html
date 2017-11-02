@@ -1,17 +1,10 @@
+{% extends 'base.html' %}
 {% load render_table from django_tables2 %}
 {% load static %}
-<!doctype html>
-<html>
-    <head>
-        <link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" />
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-        <link rel="stylesheet" href="{% static 'css/main.css' %}" />
-        <title> {{heroName}} Map Winrates </title>
+{% block content %}
+    <title> {{heroName}} Map Winrates </title>
     </head>
-      <a href="{% url 'stats:index' %}"><button type="button" class="btn btn-primary">Home</button></a>
       <center><h1><a href="{% url 'stats:hero_main' slug=slug %}">{{heroName}}</a> Map Matchups</h1></center>
       <center>{% render_table table %}</center>
     </body>
-</html>
-
+    {% endblock %}

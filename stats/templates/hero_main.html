@@ -1,15 +1,9 @@
+{% extends 'base.html' %}
 {% load static %}
-{% load get_item % }
-<!doctype html>
-<html>
-    <head>
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-        <link rel="stylesheet" href="{% static 'css/main.css' %}" />
-        <title> {{hero_name}} </title>
+{% block content %}
+    <title> {{hero_name}} </title>
     </head>
     <body>
-      <a href="{% url 'stats:index' %}"><button type="button" class="btn btn-primary">Home</button></a>
       <center>
       <h1>{{hero_name}} Main Page</h1>
         <a href="{% url 'stats:allies' slug=slug %}"><button type="button" class="btn btn-primary">Allies</button></a>
@@ -19,12 +13,13 @@
         <h3> Win Rate <div class="important-text">{{win_perc}} % </div> </h3>
         <h3> Best Maps 
           <div class="important-text">
-            {{ bestMapNames.0 }} {{ bestMapWinPercs.0 }} %
-            {{ bestMapNames.1 }} {{ bestMapWinPercs.1 }} %
-            {{ bestMapNames.2 }} {{ bestMapWinPercs.2 }} %
+            <ul style="list-style-type: none;">
+              <li>{{ bestMapNames.0 }} {{ bestMapWinPercs.0 }} % </li>
+              <li>{{ bestMapNames.1 }} {{ bestMapWinPercs.1 }} %</li>
+              <li>{{ bestMapNames.2 }} {{ bestMapWinPercs.2 }} %</li>
+            </ul>
           </div> 
         </h3>
       </center>
     </body>
-</html>
-
+    {% endblock %}
