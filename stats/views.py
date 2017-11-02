@@ -122,32 +122,6 @@ def hero_main(request, slug):
                     '4':{'name':'','win_perc':0},
                     }
 
-    '''
-    #best_maps = [0]*5
-    #best_map_names = ['']*5
-    for _map in hero_maps:
-        map_win_perc = int((_map.wins / ((_map.wins+_map.losses)*1.0) * 100))
-        # calculate the top 5 maps
-        for i in range(0,5):
-            print "Looking at " + _map.name
-            #if map_win_perc > best_maps[i]:
-            if map_win_perc > best_map_dict[str(i)]['win_perc']:
-                j = 4
-                while j > i:
-                    #best_maps[j] = best_maps[j-1]
-                    #best_map_names[j] = best_map_names[j-1]
-                    best_map_dict[str(j)]['win_perc'] = best_map_dict[str(j-1)]['win_perc']
-                    best_map_dict[str(j)]['name'] = best_map_dict[str(j-1)]['name']
-                    j -= 1
-                #best_maps[i]=map_win_perc
-                best_map_dict[str(i)]['win_perc']=map_win_perc
-                best_map_dict[str(i)]['name']=_map.name
-                print "New best map " + _map.name
-                #best_map_names[i]=_map.name
-                break
-
-    print str(best_map_dict)
-    '''
     best_maps = [0]*5
     best_map_names = ['']*5
     for _map in hero_maps:
@@ -213,7 +187,6 @@ def heroes(request):
 class HeroAutoComplete(autocomplete.Select2QuerySetView):
     template_name = "heroes.html"
     def get_queryset(self):
-        print "called get_queryset"
         '''
         # Don't forget to filter out results depending on the visitor !
         if not self.request.user.is_authenticated():

@@ -17,7 +17,6 @@ class Hero(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = self.get_slug()
-        print "Saving hero " + self.name
         super(Hero,self).save(*args, **kwargs)
 
     def get_win_perc(self):
