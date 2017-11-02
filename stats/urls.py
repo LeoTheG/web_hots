@@ -1,6 +1,5 @@
 from django.conf.urls import url, include
 from . import views
-from views import HeroAutoComplete
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
@@ -13,8 +12,4 @@ urlpatterns = [
     url(r'^heroes/(?P<slug>[-\w]+)/enemies/$', views.enemies, name='enemies' ),
     url(r'^heroes/(?P<slug>[-\w]+)/allies/$', views.allies, name='allies' ),
     url(r'^heroes/(?P<slug>[-\w]+)/maps/$', views.hero_maps, name='hero_maps' ),
-
-
-    url(r'^heroes-autocomplete/$', HeroAutoComplete.as_view(),
-        name='heroes-autocomplete'),
 ]
