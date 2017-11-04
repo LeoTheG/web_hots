@@ -6,8 +6,8 @@ import re, string
 class Hero(models.Model):
     name = models.CharField(max_length=18)
     slug = models.SlugField(unique=True)
-    total_wins = models.IntegerField(default=0)
-    total_losses = models.IntegerField(default=0)
+    wins = models.IntegerField(default=0)
+    losses = models.IntegerField(default=0)
 
     def get_slug(self):
         #return slugify(self.name)
@@ -20,7 +20,7 @@ class Hero(models.Model):
         super(Hero,self).save(*args, **kwargs)
 
     def get_win_perc(self):
-        return int((self.total_wins / ((self.total_losses+self.total_losses)*1.0) * 100))
+        return int((self.wins / ((self.losses+self.losses)*1.0) * 100))
     def get_maps(self):
 #        return self.heromap_set.all().order_by('get_win_perc')[:5]
         return self.heromap_set.all()

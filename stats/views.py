@@ -35,8 +35,8 @@ load_db = 0
 # TODO better config file reading
 # check to load db
 
-def create_hero(name,total_wins,total_losses):
-    newHero = Hero(name=name, total_wins=total_wins,total_losses=total_losses)
+def create_hero(name,wins,losses):
+    newHero = Hero(name=name, wins=wins,losses=losses)
     newHero.save()
     return newHero
 
@@ -65,14 +65,14 @@ if load_db:
         normalized_h = normalize(h)
         # runs on first hero creation only
         if (firstHero):
-            newHero = create_hero(name=normalized_h, total_wins=d[h]['total_wins'],
-                    total_losses=d[h]['total_losses'])
+            newHero = create_hero(name=normalized_h, wins=d[h]['total_wins'],
+                    losses=d[h]['total_losses'])
             firstHero = False
 
         # create new hero only when no other hero exists with same name
         if len(Hero.objects.filter(name=normalized_h)) == 0:
-            newHero = create_hero(name=normalized_h, total_wins=d[h]['total_wins'],
-                        total_losses=d[h]['total_losses'])
+            newHero = create_hero(name=normalized_h, wins=d[h]['total_wins'],
+                        losses=d[h]['total_losses'])
         else:
             newHero = Hero.objects.get(name=normalized_h)
 
@@ -110,9 +110,9 @@ if load_db:
 
 def hero_main(request, slug):
     hero = Hero.objects.get(slug=slug)
-    total_wins = hero.total_wins
-    total_losses = hero.total_losses
-    win_perc = int((total_wins / ((total_losses+total_losses)*1.0) * 100))
+    wins = hero.wins
+    losses = hero.losses
+    win_perc = int((wins / ((wins+losses)*1.0) * 100))
     hero_maps = hero.heromap_set.all()
 
     best_map_dict = {'0':{'name':'','win_perc':0},

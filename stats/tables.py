@@ -9,24 +9,6 @@ from .models import HeroMap
 from django_tables2.utils import A
 from django.db.models import F
 
-# table for heroes
-class HeroTable(tables.Table):
-    name = tables.LinkColumn('stats:hero_main', args=[A('get_short_name')])
-    class Meta:
-        model = Hero
-        fields = {'name', 'slug'}
-        exclude = ('slug')
-        attrs = {}
-
-# table for maps
-class MapTable(tables.Table):
-    name = tables.LinkColumn('stats:map_heroes', args=[A('get_short_name')])
-    class Meta:
-        model = Map
-        fields = {'name', 'slug'}
-        exclude = ('slug')
-        attrs = {}
-
 class TotalGamesColumn(tables.Column):
     def render(self, record):
         return str(record.wins + record.losses)
@@ -41,6 +23,26 @@ class WinPercColumn(tables.Column):
         queryset = queryset.annotate(win_perc=(F('wins')/((F('losses')+F('wins'))*1.0))).order_by(('-' if is_descending else '') + 'win_perc')
         return (queryset, True)
 
+
+# table for heroes
+class HeroTable(tables.Table):
+    name = tables.LinkColumn('stats:hero_main', args=[A('get_short_name')])
+    win_perc = WinPercColumn(empty_values=())
+    class Meta:
+        model = Hero
+        fields = {'name','win_perc', 'slug'}
+        sequence = ('name', 'win_perc')
+        exclude = ('slug')
+        attrs = {}
+
+# table for maps
+class MapTable(tables.Table):
+    name = tables.LinkColumn('stats:map_heroes', args=[A('get_short_name')])
+    class Meta:
+        model = Map
+        fields = {'name', 'slug'}
+        exclude = ('slug')
+        attrs = {}
 # enemies of heroes
 class EnemyTable(tables.Table):
     name = tables.LinkColumn('stats:hero_main', args=[A('get_short_name')])
