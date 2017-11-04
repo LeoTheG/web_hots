@@ -74,6 +74,20 @@ class HeroMap(models.Model):
     wins = models.IntegerField()
     losses = models.IntegerField()
     hero = models.ForeignKey(Hero, on_delete=models.CASCADE)
+    slug = models.SlugField()
+
+    def get_slug(self):
+        '''
+        print "get_slug for heroMap: " +self.name + " = " + slugify(self.hero.get_short_name()+self.get_short_name())
+        return slugify(self.hero.get_short_name()+self.get_short_name())
+    '''
+        return slugify(self.get_short_name())
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = self.get_slug()
+        super(HeroMap,self).save(*args, **kwargs)
+
 
     def get_short_name(self):
         return slugify(re.sub(r'\W+', '', self.name))

@@ -6,12 +6,14 @@ from .models import Hero
 from .models import Enemy
 from .models import Map
 from .models import Ally
+from .models import Talent
 from .models import HeroMap
 from .models import MapHero
 from .models import Talent
 from .tables import HeroTable
 from .tables import EnemyTable
 from .tables import AllyTable
+from .tables import TalentTable
 from .tables import MapTable
 from .tables import MapHeroTable
 from .tables import HeroMapTable
@@ -163,6 +165,13 @@ def hero_maps(request, slug):
     #where to declare variables inside view available for html
     return render(request, 'hero_maps.html', { 'table': hero_map_table, 'heroName':hero.name, 'slug':slug} )
 
+def hero_map_talents(request, heroslug,mapslug):
+    hero = Hero.objects.get(slug=heroslug)
+    hero_map = HeroMap.objects.get(slug=mapslug,hero=hero)
+    all_map_talents = hero_map.talent_set.all()
+    table = TalentTable(all_map_talents)
+    RequestConfig(request).configure(table)
+    return render(request, 'hero_map_talents.html', {'table': table, 'mapName':hero_map.name,'mapslug':mapslug,'heroslug':heroslug,'heroName':hero.name} )
 
 def map_heroes(request, slug):
     _map = Map.objects.get(slug=slug)
@@ -183,20 +192,3 @@ def heroes(request):
     table = HeroTable(Hero.objects.all())
     RequestConfig(request).configure(table)
     return render(request, 'heroes.html', { 'table': table})
-
-class HeroAutoComplete(autocomplete.Select2QuerySetView):
-    template_name = "heroes.html"
-    def get_queryset(self):
-        '''
-        # Don't forget to filter out results depending on the visitor !
-        if not self.request.user.is_authenticated():
-            return Country.objects.none()
-        '''
-
-        qs = Hero.objects.all()
-
-        if self.q:
-            qs = qs.filter(name__istartswith=self.q)
-
-        return qs
-

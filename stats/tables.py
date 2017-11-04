@@ -5,6 +5,7 @@ from .models import Ally
 from .models import Map
 from .models import MapHero
 from .models import HeroMap
+from .models import Talent
 
 from django_tables2.utils import A
 from django.db.models import F
@@ -22,6 +23,7 @@ class WinPercColumn(tables.Column):
     def order(self, queryset, is_descending):
         queryset = queryset.annotate(win_perc=(F('wins')/((F('losses')+F('wins'))*1.0))).order_by(('-' if is_descending else '') + 'win_perc')
         return (queryset, True)
+
 
 
 # table for heroes
@@ -85,8 +87,8 @@ class MapHeroTable(tables.Table):
 
 # maps of heroes
 class HeroMapTable(tables.Table):
-    name = tables.LinkColumn('stats:map_heroes',
-            args=[A('get_short_name')])
+    name = tables.LinkColumn('stats:hero_map_talents',
+            args=[A('hero.get_short_name'),A('get_short_name')])
     win_perc = WinPercColumn(empty_values=())
     total_games = TotalGamesColumn(empty_values=())
 
@@ -97,3 +99,11 @@ class HeroMapTable(tables.Table):
         attrs = {}
         exclude= ('wins','losses')
 
+class TalentTable(tables.Table):
+    win_perc = WinPercColumn(empty_values=())
+    total_games = TotalGamesColumn(empty_values=())
+    class Meta:
+        model = Talent
+        sequence = ('level','name','win_perc', 'total_games','wins','losses')
+        attrs={}
+        exclude = ('wins','losses','hero_map','id')
