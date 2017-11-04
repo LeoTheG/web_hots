@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load render_table from django_tables2 %}
+{% load static %}
+{% block content %}
+    <title> {{heroName}} Map Winrates </title>
+    </head>
+      <center><h1><a href="{% url 'stats:hero_main' slug=slug %}">{{heroName}}</a> Map Matchups</h1></center>
+      <center>{% render_table table %}</center>
+    </body>
+    {% endblock %}

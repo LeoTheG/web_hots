@@ -1,13 +1,11 @@
 {% extends 'base.html' %}
 {% load render_table from django_tables2 %}
-{% load static %}
 
 {% block content %}
-    <title> Hero Index </title>
+    <title> Map Index </title>
     </head>
     <body>
-        <center><h1> Hero Index</h1> </center>
+        <center><h1> Map Index</h1> </center>
         <center>{% render_table table %}</center>
     </body>
-</html>
-{% endblock %}
+    {% endblock %}

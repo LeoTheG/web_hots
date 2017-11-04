@@ -1,16 +1,13 @@
 import django_tables2 as tables
 from .models import Hero
 from .models import Enemy
+from .models import Ally
+from .models import Map
+from .models import MapHero
+from .models import HeroMap
+
 from django_tables2.utils import A
 from django.db.models import F
-
-class HeroTable(tables.Table):
-    name = tables.LinkColumn('stats:enemies', args=[A('get_short_name')])
-    class Meta:
-        model = Hero
-        fields = {'name', 'slug'}
-        exclude = ('slug')
-        attrs = {}
 
 class TotalGamesColumn(tables.Column):
     def render(self, record):
@@ -26,8 +23,29 @@ class WinPercColumn(tables.Column):
         queryset = queryset.annotate(win_perc=(F('wins')/((F('losses')+F('wins'))*1.0))).order_by(('-' if is_descending else '') + 'win_perc')
         return (queryset, True)
 
+
+# table for heroes
+class HeroTable(tables.Table):
+    name = tables.LinkColumn('stats:hero_main', args=[A('get_short_name')])
+    win_perc = WinPercColumn(empty_values=())
+    class Meta:
+        model = Hero
+        fields = {'name','win_perc', 'slug'}
+        sequence = ('name', 'win_perc')
+        exclude = ('slug')
+        attrs = {}
+
+# table for maps
+class MapTable(tables.Table):
+    name = tables.LinkColumn('stats:map_heroes', args=[A('get_short_name')])
+    class Meta:
+        model = Map
+        fields = {'name', 'slug'}
+        exclude = ('slug')
+        attrs = {}
+# enemies of heroes
 class EnemyTable(tables.Table):
-    name = tables.LinkColumn('stats:enemies', args=[A('get_short_name')])
+    name = tables.LinkColumn('stats:hero_main', args=[A('get_short_name')])
     win_perc = WinPercColumn(empty_values=())
     total_games = TotalGamesColumn(empty_values=())
 
@@ -38,3 +56,44 @@ class EnemyTable(tables.Table):
         attrs = {}
         #        }
         exclude= ('wins','losses')
+# allies of heroes
+class AllyTable(tables.Table):
+    name = tables.LinkColumn('stats:hero_main', args=[A('get_short_name')])
+    win_perc = WinPercColumn(empty_values=())
+    total_games = TotalGamesColumn(empty_values=())
+
+    class Meta:
+        model = Ally
+        sequence = ('name', 'win_perc', 'total_games', 'wins', 'losses')
+        fields = {'name', 'win_perc', 'total_games','wins','losses' }
+        attrs = {}
+        #        }
+        exclude= ('wins','losses')
+# heroes of map
+class MapHeroTable(tables.Table):
+    name = tables.LinkColumn('stats:hero_main',
+            args=[A('get_short_name')])
+    win_perc = WinPercColumn(empty_values=())
+    total_games = TotalGamesColumn(empty_values=())
+
+    class Meta:
+        model = MapHero
+        sequence = ('name', 'win_perc', 'total_games', 'wins', 'losses')
+        fields = {'name', 'win_perc', 'total_games','wins','losses' }
+        attrs = {}
+        exclude= ('wins','losses')
+
+# maps of heroes
+class HeroMapTable(tables.Table):
+    name = tables.LinkColumn('stats:map_heroes',
+            args=[A('get_short_name')])
+    win_perc = WinPercColumn(empty_values=())
+    total_games = TotalGamesColumn(empty_values=())
+
+    class Meta:
+        model = HeroMap
+        sequence = ('name', 'win_perc', 'total_games', 'wins', 'losses')
+        fields = {'name', 'win_perc', 'total_games','wins','losses' }
+        attrs = {}
+        exclude= ('wins','losses')
+

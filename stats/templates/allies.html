@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load render_table from django_tables2 %}
+{% block content %}
+    <title> {{heroName}} Allies </title>
+    <body> <center>
+        <h1><a href="{% url 'stats:hero_main' slug=slug %}">{{heroName}}</a> Ally Matchups</h1></center>
+      <center><div class="table_container">
+          {% render_table ally_table %}
+        </div></center>
+    </center> </body>
+{% endblock %}
+
