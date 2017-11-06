@@ -6,7 +6,7 @@ from .models import Hero
 from .models import Enemy
 from .models import Map
 from .models import Ally
-from .models import Talent
+from .models import HeroMapTalent
 from .models import HeroMap
 from .models import MapHero
 from .models import Talent
@@ -60,6 +60,12 @@ if load_db:
         for hero in d['maps'][_map]:
             new_map_hero = MapHero(name=hero,_map=new_map,wins=d['maps'][_map][hero]['wins'], losses=d['maps'][_map][hero]['losses'])
             new_map_hero.save()
+
+    # create talents
+    for t in d['talents']:
+        for hero in d['talents'][t]['heroes']:
+            talent = Talent(name=d['talents'][t]['short_name'],level=d['talents'][t]['level'], wins=d['talents'][t]['heroes'][hero]['wins'],losses=d['talents'][t]['heroes'][hero]['losses'],description=d['talents'][t]['description'], url=d['talents'][t]['url'], cooldown=d['talents'][t]['cooldown'],heroName=hero)
+
     firstHero = True
     for h in d:
         if h == 'maps':
@@ -168,7 +174,7 @@ def hero_maps(request, slug):
 def hero_map_talents(request, heroslug,mapslug):
     hero = Hero.objects.get(slug=heroslug)
     hero_map = HeroMap.objects.get(slug=mapslug,hero=hero)
-    all_map_talents = hero_map.talent_set.all()
+    all_map_talents = hero_map.heromaptalent_set.all()
     table = TalentTable(all_map_talents)
     RequestConfig(request).configure(table)
     return render(request, 'hero_map_talents.html', {'table': table, 'mapName':hero_map.name,'mapslug':mapslug,'heroslug':heroslug,'heroName':hero.name} )

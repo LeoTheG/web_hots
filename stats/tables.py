@@ -6,6 +6,7 @@ from .models import Map
 from .models import MapHero
 from .models import HeroMap
 from .models import Talent
+from .models import HeroMapTalent
 
 from django_tables2.utils import A
 from django.db.models import F
@@ -103,7 +104,7 @@ class TalentTable(tables.Table):
     win_perc = WinPercColumn(empty_values=())
     total_games = TotalGamesColumn(empty_values=())
     class Meta:
-        model = Talent
+        model = HeroMapTalent
         sequence = ('level','name','win_perc', 'total_games','wins','losses')
         attrs={}
         exclude = ('wins','losses','hero_map','id')
