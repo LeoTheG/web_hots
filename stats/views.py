@@ -13,10 +13,10 @@ from .models import Talent
 from .tables import HeroTable
 from .tables import EnemyTable
 from .tables import AllyTable
-from .tables import TalentTable
 from .tables import MapTable
 from .tables import MapHeroTable
 from .tables import HeroMapTable
+from .tables import HeroMapTalentTable
 from django_tables2 import RequestConfig
 import unicodedata
 from dal import autocomplete
@@ -68,7 +68,7 @@ if load_db:
 
     firstHero = True
     for h in d:
-        if h == 'maps':
+        if h == 'maps' or h == 'talents':
             continue
         normalized_h = normalize(h)
         # runs on first hero creation only
@@ -87,15 +87,13 @@ if load_db:
         # create new maps and talents for maps
         for _map in d[h]['maps']:
             normalized_map = normalize(_map)
-            newHeroMap = HeroMap(name=normalized_map,wins=d[h]['maps'][_map]['wins'],
-                                 losses=d[h]['maps'][_map]['losses'], hero=newHero)
+            newHeroMap = HeroMap(name=normalized_map,wins=d[h]['maps'][_map]['wins'], losses=d[h]['maps'][_map]['losses'], hero=newHero)
             newHeroMap.save()
             talent_counter = 0
             for talent_level in d[h]['maps'][_map]['talents']:
-                #for talent_choice in d[h]['maps'][_map]['talents'][talent][LEVELS[talent_counter]]:
                 for talent_choice in d[h]['maps'][_map]['talents'][talent_level]:
-                    newTalent = Talent(level=talent_level, name=talent_choice,wins=d[h]['maps'][_map]['talents'][talent_level][talent_choice]['wins'], losses=d[h]['maps'][_map]['talents'][talent_level][talent_choice]['losses'], hero_map=newHeroMap)
-                    newTalent.save()
+                    newHeroMapTalent = HeroMapTalent(level=talent_level, name=talent_choice,wins=d[h]['maps'][_map]['talents'][talent_level][talent_choice]['wins'], losses=d[h]['maps'][_map]['talents'][talent_level][talent_choice]['losses'], hero_map=newHeroMap)
+                    newHeroMapTalent.save()
                     talent_counter += 1
 
         # create new enemies
@@ -175,7 +173,7 @@ def hero_map_talents(request, heroslug,mapslug):
     hero = Hero.objects.get(slug=heroslug)
     hero_map = HeroMap.objects.get(slug=mapslug,hero=hero)
     all_map_talents = hero_map.heromaptalent_set.all()
-    table = TalentTable(all_map_talents)
+    table = HeroMapTalentTable(all_map_talents)
     RequestConfig(request).configure(table)
     return render(request, 'hero_map_talents.html', {'table': table, 'mapName':hero_map.name,'mapslug':mapslug,'heroslug':heroslug,'heroName':hero.name} )
 

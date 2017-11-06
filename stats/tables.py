@@ -100,7 +100,7 @@ class HeroMapTable(tables.Table):
         attrs = {}
         exclude= ('wins','losses')
 
-class TalentTable(tables.Table):
+class HeroMapTalentTable(tables.Table):
     win_perc = WinPercColumn(empty_values=())
     total_games = TotalGamesColumn(empty_values=())
     class Meta:

@@ -105,14 +105,13 @@ class HeroMapTalent(models.Model):
     wins = models.IntegerField()
     losses = models.IntegerField()
     hero_map = models.ForeignKey(HeroMap, on_delete=models.CASCADE)
-    def get_short_name(self):
-        Talent.objects.get(
+
 class Talent(models.Model):
     name = models.CharField(max_length=64)
     level = models.IntegerField()
     wins = models.IntegerField()
     losses = models.IntegerField()
-    description = models.CharField(max_length=1024)
-    url = models.CharField(max_length=128)
-    cooldown = models.IntegerField()
-    heroName = models.CharField(max_length=32)
+    description = models.CharField(default='',max_length=1024)
+    url = models.CharField(default='',max_length=128)
+    cooldown = models.IntegerField(default=-1)
+    heroName = models.CharField(default='',max_length=32)
