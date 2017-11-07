@@ -16,6 +16,7 @@ from .tables import AllyTable
 from .tables import MapTable
 from .tables import MapHeroTable
 from .tables import HeroMapTable
+from .tables import HeroTalentTable
 from .tables import HeroMapTalentTable
 from django_tables2 import RequestConfig
 import unicodedata
@@ -53,7 +54,23 @@ if load_db:
 
     # create talents
     for t in d['talents']:
+        if (('description' in d['talents'][t])==False) or (('short_name' in d['talents'][t])==False) or (('level' in d['talents'][t])==False) or (('url' in d['talents'][t])==False):
+            continue
         for hero in d['talents'][t]['heroes']:
+            '''
+            if ('url' in d['talents'][t]) == False:
+                if (d['talents'][t]['level']==None):
+                    talent = Talent(name=d['talents'][t]['short_name'],level=-1, wins=d['talents'][t]['heroes'][hero]['wins'],losses=d['talents'][t]['heroes'][hero]['losses'],description=d['talents'][t]['description'], url='', cooldown=d['talents'][t]['cooldown'],heroName=hero)
+                else:
+                    talent = Talent(name=d['talents'][t]['short_name'],level=d['talents'][t]['level'], wins=d['talents'][t]['heroes'][hero]['wins'],losses=d['talents'][t]['heroes'][hero]['losses'],description=d['talents'][t]['description'], url='', cooldown=d['talents'][t]['cooldown'],heroName=hero)
+
+                talent = Talent(name=d['talents'][t]['short_name'],level=d['talents'][t]['level'], wins=d['talents'][t]['heroes'][hero]['wins'],losses=d['talents'][t]['heroes'][hero]['losses'],description=d['talents'][t]['description'], url='', cooldown=d['talents'][t]['cooldown'],heroName=hero)
+            else:
+                if (d['talents'][t]['level']==None):
+                    talent = Talent(name=d['talents'][t]['short_name'],level=-1, wins=d['talents'][t]['heroes'][hero]['wins'],losses=d['talents'][t]['heroes'][hero]['losses'],description=d['talents'][t]['description'], url=d['talents'][t]['url'], cooldown=d['talents'][t]['cooldown'],heroName=hero)
+                else:
+                    talent = Talent(name=d['talents'][t]['short_name'],level=d['talents'][t]['level'], wins=d['talents'][t]['heroes'][hero]['wins'],losses=d['talents'][t]['heroes'][hero]['losses'],description=d['talents'][t]['description'], url=d['talents'][t]['url'], cooldown=d['talents'][t]['cooldown'],heroName=hero)
+            '''
             talent = Talent(name=d['talents'][t]['short_name'],level=d['talents'][t]['level'], wins=d['talents'][t]['heroes'][hero]['wins'],losses=d['talents'][t]['heroes'][hero]['losses'],description=d['talents'][t]['description'], url=d['talents'][t]['url'], cooldown=d['talents'][t]['cooldown'],heroName=hero)
             talent.save()
 
@@ -83,6 +100,9 @@ if load_db:
             talent_counter = 0
             for talent_level in d[h]['maps'][_map]['talents']:
                 for talent_choice in d[h]['maps'][_map]['talents'][talent_level]:
+                    if len(Talent.objects.filter(name=talent_choice)) == 0:
+                        print "No Talent object for talent:"+talent_choice
+                        continue
                     newHeroMapTalent = HeroMapTalent(level=talent_level, name=talent_choice,wins=d[h]['maps'][_map]['talents'][talent_level][talent_choice]['wins'], losses=d[h]['maps'][_map]['talents'][talent_level][talent_choice]['losses'], hero_map=newHeroMap,description=Talent.objects.filter(name=talent_choice)[0].description)
                     newHeroMapTalent.save()
                     talent_counter += 1
@@ -167,6 +187,14 @@ def hero_map_talents(request, heroslug,mapslug):
     table = HeroMapTalentTable(all_map_talents)
     RequestConfig(request).configure(table)
     return render(request, 'hero_map_talents.html', {'table': table, 'mapName':hero_map.name,'mapslug':mapslug,'heroslug':heroslug,'heroName':hero.name} )
+
+def hero_talents(request, heroslug):
+    hero = Hero.objects.get(slug=heroslug)
+    all_talents = Talent.objects.filter(heroName=hero.name)
+    table = HeroTalentTable(all_talents)
+    RequestConfig(request).configure(table)
+    return render(request, 'hero_talents.html', {'table': table,'heroslug':heroslug,'heroName':hero.name} )
+
 
 def map_heroes(request, slug):
     _map = Map.objects.get(slug=slug)

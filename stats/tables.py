@@ -109,5 +109,14 @@ class HeroMapTalentTable(tables.Table):
     description = DescriptionColumn(attrs={'td':{'id':'description'}},orderable=False)
     class Meta:
         model = HeroMapTalent
-        sequence = ('level','name','win_perc', 'total_games','wins','losses')
+        sequence = ('level','name','win_perc','description', 'total_games','wins','losses')
         exclude = ('wins','losses','hero_map','id')
+
+class HeroTalentTable(tables.Table):
+    win_perc = WinPercColumn(empty_values=())
+    total_games = TotalGamesColumn(empty_values=())
+    description = DescriptionColumn(attrs={'td':{'id':'description'}},orderable=False)
+    class Meta:
+        model = Talent
+        sequence = ('level','name','win_perc','description', 'total_games','wins','losses')
+        exclude = ('wins','losses','url','id','cooldown','heroName')

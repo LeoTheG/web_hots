@@ -94,9 +94,9 @@ class HeroMap(models.Model):
 
 class Talent(models.Model):
     name = models.CharField(max_length=64)
-    level = models.IntegerField()
-    wins = models.IntegerField()
-    losses = models.IntegerField()
+    level = models.IntegerField(default=-1)
+    wins = models.IntegerField(default=-1)
+    losses = models.IntegerField(default=-1)
     description = models.CharField(default='',max_length=1024)
     url = models.CharField(default='',max_length=128)
     cooldown = models.IntegerField(default=-1,null=True)

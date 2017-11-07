@@ -12,4 +12,5 @@ urlpatterns = [
     url(r'^heroes/(?P<slug>[-\w]+)/allies/$', views.allies, name='allies' ),
     url(r'^heroes/(?P<slug>[-\w]+)/maps/$', views.hero_maps, name='hero_maps' ),
     url(r'^heroes/(?P<heroslug>[-\w]+)/maps/(?P<mapslug>[-\w]+)/talents/$', views.hero_map_talents, name='hero_map_talents' ),
+    url(r'^heroes/(?P<heroslug>[-\w]+)/talents/$', views.hero_talents, name='hero_talents'),
 ]

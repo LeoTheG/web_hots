@@ -9,6 +9,7 @@
         <a href="{% url 'stats:allies' slug=slug %}"><button type="button" class="btn btn-primary">Allies</button></a>
         <a href="{% url 'stats:enemies' slug=slug %}"><button type="button" class="btn btn-primary">Enemies</button></a>
         <a href="{% url 'stats:hero_maps' slug=slug %}"><button type="button" class="btn btn-primary">Maps</button></a>
+        <a href="{% url 'stats:hero_talents' heroslug=slug %}"><button type="button" class="btn btn-primary">Talents</button></a>
         <h2> Overview </h2>
         <h3> Win Rate <div class="important-text">{{win_perc}} % </div> </h3>
         <h3> Best Maps 
