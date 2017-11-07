@@ -25,8 +25,6 @@ class WinPercColumn(tables.Column):
         queryset = queryset.annotate(win_perc=(F('wins')/((F('losses')+F('wins'))*1.0))).order_by(('-' if is_descending else '') + 'win_perc')
         return (queryset, True)
 
-
-
 # table for heroes
 class HeroTable(tables.Table):
     name = tables.LinkColumn('stats:hero_main', args=[A('get_short_name')])
@@ -100,11 +98,16 @@ class HeroMapTable(tables.Table):
         attrs = {}
         exclude= ('wins','losses')
 
+
+class DescriptionColumn(tables.Column):
+    def render(self,record):
+        return record.description
+
 class HeroMapTalentTable(tables.Table):
     win_perc = WinPercColumn(empty_values=())
     total_games = TotalGamesColumn(empty_values=())
+    description = DescriptionColumn(attrs={'td':{'id':'description'}},orderable=False)
     class Meta:
         model = HeroMapTalent
         sequence = ('level','name','win_perc', 'total_games','wins','losses')
-        attrs={}
         exclude = ('wins','losses','hero_map','id')

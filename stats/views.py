@@ -22,16 +22,6 @@ import unicodedata
 from dal import autocomplete
 
 LEVELS = ['1','4','7','10','13','16','20']
-# Instanciate a widget with a bunch of options for select2:
-autocomplete.ModelSelect2(
-    url='select2_fk',
-    attrs={
-        # Set some placeholder
-        'data-placeholder': 'Autocomplete ...',
-        # Only trigger autocompletion after 3 characters have been typed
-        'data-minimum-input-length': 1,
-    },
-)
 
 load_db = 0
 # TODO better config file reading
@@ -65,6 +55,7 @@ if load_db:
     for t in d['talents']:
         for hero in d['talents'][t]['heroes']:
             talent = Talent(name=d['talents'][t]['short_name'],level=d['talents'][t]['level'], wins=d['talents'][t]['heroes'][hero]['wins'],losses=d['talents'][t]['heroes'][hero]['losses'],description=d['talents'][t]['description'], url=d['talents'][t]['url'], cooldown=d['talents'][t]['cooldown'],heroName=hero)
+            talent.save()
 
     firstHero = True
     for h in d:
@@ -92,7 +83,7 @@ if load_db:
             talent_counter = 0
             for talent_level in d[h]['maps'][_map]['talents']:
                 for talent_choice in d[h]['maps'][_map]['talents'][talent_level]:
-                    newHeroMapTalent = HeroMapTalent(level=talent_level, name=talent_choice,wins=d[h]['maps'][_map]['talents'][talent_level][talent_choice]['wins'], losses=d[h]['maps'][_map]['talents'][talent_level][talent_choice]['losses'], hero_map=newHeroMap)
+                    newHeroMapTalent = HeroMapTalent(level=talent_level, name=talent_choice,wins=d[h]['maps'][_map]['talents'][talent_level][talent_choice]['wins'], losses=d[h]['maps'][_map]['talents'][talent_level][talent_choice]['losses'], hero_map=newHeroMap,description=Talent.objects.filter(name=talent_choice)[0].description)
                     newHeroMapTalent.save()
                     talent_counter += 1
 

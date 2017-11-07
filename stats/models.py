@@ -92,20 +92,6 @@ class HeroMap(models.Model):
     def get_short_name(self):
         return slugify(re.sub(r'\W+', '', self.name))
 
-    '''
-    @classmethod
-    def get_win_perc(self):
-        calcWinPerc = int((self.wins / ((self.losses+self.losses)*1.0) * 100))
-        self.win_perc = calcWinPerc
-        return calcWinPerc
-    '''
-class HeroMapTalent(models.Model):
-    level = models.IntegerField()
-    name = models.CharField(max_length=64)
-    wins = models.IntegerField()
-    losses = models.IntegerField()
-    hero_map = models.ForeignKey(HeroMap, on_delete=models.CASCADE)
-
 class Talent(models.Model):
     name = models.CharField(max_length=64)
     level = models.IntegerField()
@@ -113,5 +99,19 @@ class Talent(models.Model):
     losses = models.IntegerField()
     description = models.CharField(default='',max_length=1024)
     url = models.CharField(default='',max_length=128)
-    cooldown = models.IntegerField(default=-1)
+    cooldown = models.IntegerField(default=-1,null=True)
     heroName = models.CharField(default='',max_length=32)
+
+class HeroMapTalent(models.Model):
+    level = models.IntegerField()
+    name = models.CharField(max_length=64)
+    wins = models.IntegerField()
+    losses = models.IntegerField()
+    hero_map = models.ForeignKey(HeroMap, on_delete=models.CASCADE)
+    description = models.CharField(default='',max_length=1024)
+
+    '''
+    def get_description(self):
+        talent = Talent.objects.get(name=self.name)
+        return talent.description
+    '''
