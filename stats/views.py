@@ -101,7 +101,6 @@ if load_db:
             for talent_level in d[h]['maps'][_map]['talents']:
                 for talent_choice in d[h]['maps'][_map]['talents'][talent_level]:
                     if len(Talent.objects.filter(name=talent_choice)) == 0:
-                        print "No Talent object for talent:"+talent_choice
                         continue
                     newHeroMapTalent = HeroMapTalent(level=talent_level, name=talent_choice,wins=d[h]['maps'][_map]['talents'][talent_level][talent_choice]['wins'], losses=d[h]['maps'][_map]['talents'][talent_level][talent_choice]['losses'], hero_map=newHeroMap,description=Talent.objects.filter(name=talent_choice)[0].description)
                     newHeroMapTalent.save()

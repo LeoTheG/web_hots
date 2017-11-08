@@ -77,10 +77,6 @@ class HeroMap(models.Model):
     slug = models.SlugField()
 
     def get_slug(self):
-        '''
-        print "get_slug for heroMap: " +self.name + " = " + slugify(self.hero.get_short_name()+self.get_short_name())
-        return slugify(self.hero.get_short_name()+self.get_short_name())
-    '''
         return slugify(self.get_short_name())
 
     def save(self, *args, **kwargs):
